@@ -4,7 +4,7 @@
       <div class="img_box">
         <img src="../assets/img/bg1.png" style="z-index: 999" />
         <p class="bodynumber">客户导向 协同绩效 持续创新</p>
-        <p class="bodybottom">@孙霸天</p>
+        <p class="bodybottom">@孙霸天666</p>
       </div>
     </div>
     <div class="login_right">
