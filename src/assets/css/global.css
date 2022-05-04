@@ -10,3 +10,49 @@ font-size: 14px;
 
 color: #333;
 }
+
+.el-range-editor.is-active, .el-range-editor.is-active:hover, .el-select .el-input.is-focus .el-input__inner{
+    border-color: #40aeb6;
+}
+
+/* select框选中的字体颜色 */
+.el-select-dropdown__item.selected {
+    color: #40aeb6;
+}
+
+/* 单选按钮样式  */
+.el-radio__input.is-checked .el-radio__inner{
+    border-color: #40aeb6;
+    background: #40aeb6;
+  
+
+}
+/* 单选按钮样式被选中后字体变色  */
+.el-radio__input.is-checked + .el-radio__label{
+    color: #40aeb6;
+   
+}
+
+.el-input__inner:focus  {
+    border-color: #40aeb6;
+}
+.el-button:focus, .el-button:hover{
+    color: #40aeb6;
+    border-color: #40aeb6;
+}
+.el-select .el-input__inner:focus{
+    border-color:#D2D5DC
+
+}
+.el-cascader .el-input .el-input__inner:focus, .el-cascader .el-input.is-focus .el-input__inner{
+    border-color: #40aeb6;
+}
+.el-cascader-node.in-active-path, .el-cascader-node.is-active, .el-cascader-node.is-selectable.in-checked-path{
+    color: #40aeb6;
+}
+.el-form-item{
+    margin-left: 0 !important;
+}
+.sq1{
+    width: 150px !important;
+}
