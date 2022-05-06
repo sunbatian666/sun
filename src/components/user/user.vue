@@ -43,10 +43,10 @@
             <el-col :span="3">
               <el-select v-model="value" placeholder="选择卡等级">
                 <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item5 in options5"
+                  :key="item5.value"
+                  :label="item5.label"
+                  :value="item5.value"
                 >
                 </el-option>
               </el-select>
@@ -58,78 +58,94 @@
         <div>
           <el-row :gutter="20">
             <el-col :span="3">
-              <el-select v-model="value" placeholder="注册门店">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
+               <el-cascader
+    v-model="value6"
+    :options="options6"
+   :show-all-levels="false"
+   ></el-cascader>
             </el-col>
 
             <el-col :span="3">
-              <el-select v-model="value" placeholder="卡籍门店">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
+                 <el-cascader
+    v-model="value7"
+    :options="options6"
+    :show-all-levels="false"
+   ></el-cascader>  
             </el-col>
             <el-button class="select" @click="getUserList">查询</el-button>
             <el-button class="select">查询手机号</el-button>
             <el-button class="addbutton select"  @click="diglog=true">新增</el-button>
             <el-button class="addbutton select"  @click="diglog1=true">添加用户</el-button>
-           
-
-
-
           </el-row>
 
+          <!--添加用户对话框-->
+        
           <el-dialog
   title="添加用户"
   :visible.sync="diglog1"
   width="40%"
-  
+  @close="clearform"
+ >
+
+<el-form ref="form" :model="formadd" label-width="80px" :rules="formrules">
+  <el-form-item label="用户名" >
+    <el-input v-model="formadd.username" ></el-input>
+  </el-form-item>
+   <el-form-item label="密码" >
+    <el-input v-model="formadd.password"></el-input>
+  </el-form-item>
+   <el-form-item label="邮箱" >
+    <el-input v-model="formadd.email"></el-input>
+  </el-form-item>
+   <el-form-item label="手机" >
+    <el-input v-model="formadd.mobile"></el-input>
+  </el-form-item>
+</el-form>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="diglog1 = false">取 消</el-button>
+    <el-button type="primary" @click="adduser()">确 定</el-button>
+  </span>
+</el-dialog>
+
+         <!--修改用户对话框-->
+          <el-dialog
+  title="修改用户"
+  :visible.sync="diglog2"
+  width="40%" 
  >
 
 
-<el-form ref="form" :model="formrule" label-width="80px" :rules="formrules">
-  <el-form-item label="用户名" prop="username">
-    <el-input v-model="userform.name" ></el-input>
+<el-form :model="alterform" label-width="80px" :rules="formrules">
+ 
+    <el-form-item label="用户名" >
+    <el-input v-model="alterform.username" disabled></el-input>
   </el-form-item>
-   <el-form-item label="密码" prop="password">
-    <el-input v-model="userform.password"></el-input>
+   <el-form-item label="邮箱" >
+    <el-input v-model="alterform.email"></el-input>
   </el-form-item>
-   <el-form-item label="邮箱" prop="email">
-    <el-input v-model="userform.email"></el-input>
-  </el-form-item>
-   <el-form-item label="手机" prop="mobile">
-    <el-input v-model="userform.mobile"></el-input>
+   <el-form-item label="手机" >
+    <el-input v-model="alterform.mobile"></el-input>
   </el-form-item>
 </el-form>
-
-
   <span slot="footer" class="dialog-footer">
-    <el-button @click="diglog1 = false">取 消</el-button>
-    <el-button type="primary" @click="diglog1 = false">确 定</el-button>
+    <el-button @click="diglog2 = false">取 消</el-button>
+    <el-button type="primary" @click="alteruser()">确 定</el-button>
   </span>
 </el-dialog>
 
           <el-table
             :data="userlist"
-            border
+           
             style="width: 100%"
             :header-cell-style="{
               background: '#E7ECF0',
               borderColor: '#D2D5DC',
+              
             }"
             :cell-style="{ borderColor: '#D2D5DC' }"
             :row-style="{ borderColor: '#D2D5DC' }"
+            border
+            
           >
             <el-table-column
               type="index"
@@ -156,29 +172,30 @@
                 </template>     
             </el-table-column>
 
-            <el-table-column prop="" label="操作" min-width="220">
+            <el-table-column prop="" label="操作" min-width="220" >
+              <template v-slot="scope1">
               <el-tooltip
-                class="item"
+               
                 effect="dark"
                 content="修改信息"
                 placement="top"
                 :enterable="false">
-
-                <el-button class="editbutton" icon="el-icon-edit"></el-button>    
+                <el-button class="editbutton" icon="el-icon-edit" @click="getuserid(scope1.row)"></el-button>    
               </el-tooltip>
+              
 
               <el-tooltip
-                class="item"
+              
                 effect="dark"
                 content="删除角色"
                 placement="top"
                 :enterable="false"
               >
-                <el-button type="danger" icon="el-icon-delete"></el-button>
+                <el-button type="danger" icon="el-icon-delete" @click="open(scope1.row.id)"></el-button>
               </el-tooltip>
 
               <el-tooltip
-                class="item"
+               
                 effect="dark"
                 content="分配角色"
                 placement="top"
@@ -186,6 +203,7 @@
               >
                 <el-button type="warning" icon="el-icon-setting"></el-button>
               </el-tooltip>
+              </template>
             </el-table-column>
           </el-table>
         </div>
@@ -203,33 +221,31 @@
       </el-card>
                 
 
-                <table >
-            <el-dialog
+ <table >
+  <el-dialog
   title="提示"
   :visible.sync="diglog"
   width="80%"
-  :before-close="handleClose" :show-close="false"  @close="close2">
+  :show-close="false"  @close="close2">
 
-
- 
-   
-     <el-form  label-width="100px" class="demo-form-inline"   :rules="formrules" :model="form"  ref="yanzheng" >
-       <tr>
-         <td>    
-  <el-form-item label="顾客姓名" prop="username" >
+ <el-form  label-width="100px"   :rules="formrules" :model="form"  >
+    
+ <tr> <td>    
+  <el-form-item label="顾客姓名" prop="form.username1" >
     <el-input class="buttonclass1" v-model="form.username"></el-input>
   </el-form-item>
-  </td>
+      </td>
 
-<td>
+      <td>
  <el-table-column>
-  <el-form-item label="手机号" prop="mobile">
+  <el-form-item label="手机号" prop="form.mobile1">
     <el-input class="buttonclass1" v-model="form.mobile"></el-input>
   </el-form-item>
    </el-table-column>
-</td>
-<td>
-  <el-form-item label="生日" prop="form.datatime">
+     </td>
+     
+     <td>
+  <el-form-item label="生日" prop="form.datatime1">
      <el-date-picker
       v-model="form.datatime"
       type="date"
@@ -241,7 +257,7 @@
 
 <tr>
   <td>
-  <el-form-item label="性别" prop="form.sex" >
+  <el-form-item label="性别" >
    <el-radio-group v-model="form.sex">
       <el-radio :label="1">女</el-radio>
     <el-radio :label="2">男</el-radio>
@@ -250,26 +266,26 @@
   </td>
   <td>
 
-  <el-form-item label="职业" prop="form.job">
-     <el-select v-model="form.job" placeholder="请选择" popper-class="selectclass">
+  <el-form-item label="职业">
+     <el-select v-model="form.job" placeholder="请选择" >
     <el-option
-      v-for="item in options1"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value" >
+      v-for="item1 in options1"
+      :key="item1.value"
+      :label="item1.label"
+      :value="item1.value" >
     </el-option>
   </el-select>
   </el-form-item>
   </td>
 
 <td>
-  <el-form-item label="收入范围" prop="form.salary">
-     <el-select v-model="form.salary" placeholder="请选择" popper-class="selectclass">
+  <el-form-item label="收入范围" >
+     <el-select v-model="form.salary" placeholder="请选择" >
     <el-option
-      v-for="item in options2"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value" >
+      v-for="item2 in options2"
+      :key="item2.value"
+      :label="item2.label"
+      :value="item2.value" >
     </el-option>
   </el-select>
   </el-form-item>
@@ -277,17 +293,17 @@
 </tr>
        <tr>
          <td>    
-  <el-form-item label="身份证号" prop="form.idcard" >
+  <el-form-item label="身份证号" >
     <el-input class="buttonclass1" v-model="form.idcard"></el-input>
   </el-form-item>
   </td>
 
 <td>
  <el-table-column>
-  <el-form-item label="顾客来源" prop="customer">
+  <el-form-item label="顾客来源" >
       <el-select v-model="form.customer" placeholder="请选择" popper-class="selectclass">
     <el-option
-      v-for="item in options3"
+      v-for="item in options"
       :key="item.value"
       :label="item.label"
       :value="item.value" >
@@ -297,7 +313,7 @@
    </el-table-column>
 </td>
 <td>
-  <el-form-item label="婚姻" prop="form.marriage">
+  <el-form-item label="婚姻" >
       <el-radio-group v-model="form.marriage">
     <el-radio :label="1">未知</el-radio>
     <el-radio :label="2">已婚</el-radio>
@@ -308,14 +324,14 @@
 </tr>
        <tr>
          <td>    
-  <el-form-item label="地址" prop="form.address" >
-   <el-cascader :options="options4" show-all-levels="false" clearable></el-cascader>
+  <el-form-item label="地址" >
+   <el-cascader :options="options4" :show-all-levels="false" clearable></el-cascader>
   </el-form-item>
   </td>
 
 <td>
  <el-table-column>
-  <el-form-item label="详细地址" prop="form.address">
+  <el-form-item label="详细地址" >
     <el-input class="buttonclass2" v-model="form.address"  length="300"></el-input>
   </el-form-item>
    </el-table-column>
@@ -326,7 +342,7 @@
 
 
   <span slot="footer" class="dialog-footer">
-    <el-button @click="close2()">取 消</el-button>
+    <el-button @click="diglog = false">取 消</el-button>
     <el-button class="confirmclass" @click="diglog = false">确 定</el-button>
   </span>
 
@@ -351,25 +367,25 @@ export default {
 
     return {
       formrules:{
-        username:[
+        username1:[
           { required: true, message: '姓名必填!', trigger: 'blur' },
             { min: 2, max: 20, message: '姓名长度必须大于2', trigger: 'blur' }
         ],
-        mobile:[
+        mobile1:[
            { required: true, message: '手机号必填!', trigger: 'blur' },
             { min: 11, max: 11, message: '手机号必须为11位', trigger: 'blur' }
         ],
-        datatime:[
+        datatime1:[
            { required: true, message: '生日必填!', trigger: 'blur' }
         ],
         customer:[
       { required: true, message: '来源必填!', trigger: 'blur' }
         ],
-        password:[
+        password1:[
            { required: true, message: '密码必填!', trigger: 'blur' },
             { min: 2, max: 16, message: '密码长度大于2', trigger: 'blur' }
         ],
-        email:[
+        email1:[
            { required: true, message: '邮箱必填!', trigger: 'blur' },
             { validator:checkEmail,trigger:'blur'}
         ]
@@ -399,6 +415,7 @@ export default {
         },
       ],
       value: '',
+
       queryinfo: {
         query: '',
         pagenum: '1',
@@ -431,9 +448,19 @@ export default {
         marriage:1,
         datatime:'',
         address:'',
+        
 
       
   
+      },
+      diglog2:false,
+      alterform:{},
+  
+      formadd:{
+        username:'',
+        password:'',
+        email:'',
+        mobile:''
       },
         options1: [{
           value: '政府机关',
@@ -485,46 +512,125 @@ export default {
         }],
         value2:'',
          options3: [{
-          value: '10000~20000',
+          value: '会员介绍',
           label: '会员介绍'
         },
         {
-          value: '20000以上',
+          value: '银行',
           label: '银行'
         },
         {
-          value: '5000~10000',
+          value: '朋友介绍',
           label: '朋友介绍'
         },
         {
-          value: '5000以下',
-          label: '银行'
-        },
-        {
-          value: '5000以下',
+          value: '企业',
           label: '企业'
         },
         {
-          value: '5000以下',
+          value: '团购',
           label: '团购'
         },
         {
-          value: '5000以下',
+          value: '营销活动(手机端)',
           label: '营销活动(手机端)'
         },
         {
-          value: '5000以下',
+          value: '路过',
           label: '路过'
         },
         {
-          value: '5000以下',
+          value: '员工介绍',
           label: '员工介绍'
         },
         {
-          value: '5000以下',
+          value: '老会员',
           label: '老会员'
         }],
         value3:'',
+        value6:'',
+        value7:'',
+         options5: [
+        {
+          value: '水晶卡',
+          label: '水晶卡',
+        },
+        {
+          value: '银卡',
+          label: '银卡',
+        },
+        {
+          value: '金卡',
+          label: '金卡',
+        },
+        {
+          value: '钻石卡',
+          label: '钻石卡',
+        },
+        {
+          value: '至尊卡',
+          label: '至尊卡',
+        },
+        {
+          value: '至尚卡',
+          label: '至尚卡',
+        }
+      ],
+      value6:'',
+      options6: [
+        {
+          value: '美丽田园',
+          label: '美丽田园',
+          children:[
+            {
+          value: '加盟运管中心',
+          label: '加盟运管中心',
+          children:[{
+          value: '加盟运营北区',
+          label: '加盟运营北区',
+          },{
+           value: '加盟运营南区',
+          label: '加盟运营南区',
+          }
+          ]
+        },
+        {
+          value: '美容运管中心',
+          label: '美容运管中心',
+          children:[{
+          value: '华北东北大区',
+          label: '华北东北大区',
+          },{
+          value: '华中华南大区',
+          label: '华中华南大区',
+          },{
+          value: '华东大区',
+          label: '华东大区',
+          },{
+          value: '北京运营区',
+          label: '北京运营区',
+          }]
+        },
+        {
+          value: '职能中台部门',
+          label: '职能中台部门',
+          children:[{
+          value: '美田大学',
+          label: '美田大学',
+          children:[{
+          value: '武汉培训中心',
+          label: '武汉培训中心',
+          },
+          {
+          value: '上海培训中心',
+          label: '上海培训中心',
+          }]
+          }]
+        }
+          ]
+        }
+        
+      ],
         options4:[{
           value:'北京市',
           label:'北京市',
@@ -581,25 +687,8 @@ export default {
                label:'延庆区',
           }]
           }]
-        },{
-      value:'河北省',
-          label:'河北省',
-    },{
-      value:'山西省',
-          label:'山西省',
-    },{
-      value:'内蒙古自治区',
-          label:'内蒙古自治区',
-    },{
-      value:'辽宁省',
-          label:'辽宁省',
-    },{
-      value:'吉林省',
-          label:'吉林省',
-    },{
-      value:'黑龙江省',
-          label:'黑龙江省',
-    },{
+        }
+        ,{
       value:'上海市',
           label:'上海市',
           children:[{
@@ -652,33 +741,6 @@ export default {
           label:'崇明区',
           }]
           }]
-    },{
-      value:'江苏省',
-          label:'江苏省',
-    },{
-      value:'浙江省',
-          label:'浙江省',
-    },{
-      value:'安徽省',
-          label:'安徽省',
-    },{
-      value:'福建省',
-          label:'福建省',
-    },{
-      value:'江西省',
-          label:'江西省',
-    },{
-      value:'山东省',
-          label:'山东省',
-    },{
-      value:'河南省',
-          label:'河南省',
-    },{
-      value:'湖北省',
-          label:'湖北省',
-    },{
-      value:'湖南省',
-          label:'湖南省',
     },{
          value:'广东省',
           label:'广东省',
@@ -810,60 +872,91 @@ export default {
           value:'云浮市',
           label:'云浮市',
           }]
-    },{
-      value:'广西壮族自治区',
-          label:'广西壮族自治区',
-    },{
-      value:'海南省',
-          label:'海南省',
-    },{
-      value:'重庆市',
-          label:'重庆市',
-    },{
-      value:'四川省',
-          label:'四川省',
-    },{
-      value:'贵州省',
-          label:'贵州省',
-    },{
-      value:'云南省',
-          label:'云南省',
-    },{
-      value:'西藏自治区',
-          label:'西藏自治区',
-      },
-      {value:'陕西省',
-          label:'陕西省',
-    },{
-      value:'天津甘肃省',
-          label:'天津甘肃省',
-    },{
-      value:'宁夏回族自治区',
-          label:'宁夏回族自治区',
-    },{
-      value:'新疆维吾尔自治区',
-          label:'新疆维吾尔自治区',
-    },{
-      value:'台湾省',
-          label:'台湾省',
-    },{
-      value:'香港特别行政区',
-          label:'香港特别行政区',
-    },{
-      value:'澳门特别行政区',
-          label:'澳门特别行政区',
     }],
-    diglog1:false
+    diglog1:false,
+    id:600
 
     }
   },
   created() {
     this.getUserList()
+
   },
   methods: {
+    clearform(){
+      this.formadd={}
+    },
+  async open(userid) {
+   const confirm1=await   this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).catch(() => {
+                 
+        });
+      if(confirm1!=='confirm'){
+        return this.$message.error('已取消删除')
+      }else{
+        const {data:res}=await this.$http.delete('users/'+userid)
+       // console.log(res)
+        if(res.meta.status!==200){
+          return this.$message.error('删除用户失败')
+        }else{
+          this.getUserList()
+          return this.$message.success('删除用户成功')
+        }
+      }
+      },
+   async getuserid(user){
+    
+ const{data:res}= await this.$http.get('users/'+user.id)
+ //console.log(res)
+if(res.meta.status!==200){
+  return this.$message.error('获取用户信息失败')
+}else{
+  this.diglog2=true
+  this.alterform=res.data
+  
+} },
+
+   async alteruser(){
+    
+     const { data:res}=await this.$http.put('users/'+this.alterform.id,{ email:this.alterform.email,
+     mobile:this.alterform.mobile})
+      if(res.meta.status!==200){
+        return this.$message.error('更新用户信息失败')
+      }
+      else{
+
+           this.diglog2=false
+        this.getUserList()
+        return this.$message.success('更新用户信息成功')
+     
+      }
+    
+        
+      
+    },
+
+   async adduser(){
+    
+  
+     const{data:res}=await this.$http.post('users',this.formadd  )
+     //console.log(res)
+    if(res.meta.status!==201){
+      return this.$message.error('添加用户失败')
+      this.diglog1 = false
+
+    }else{
+      this.diglog1 = false
+         this.getUserList()
+         return this.$message.success('添加用户成功')
+    }
+   
+    },
     close2() {
-      this.diglog = false
-   this.$refs.yanzheng.resetFields()
+     this.form={}
+   
     },
   async userstatechange( userinfo) {
      

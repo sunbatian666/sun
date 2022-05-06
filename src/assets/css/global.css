@@ -53,6 +53,13 @@ color: #333;
 .el-form-item{
     margin-left: 0 !important;
 }
-.sq1{
-    width: 150px !important;
+
+.el-button--primary{
+    color:#fff;
+    background-color: #40aeb6;
+    border-color: #40aeb6;
+}
+.el-button--primary:hover{
+    color:#fff;
+    background-color: #40aeb6 !important;
 }
